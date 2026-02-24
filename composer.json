@@ -1,0 +1,42 @@
+{
+    "name": "giogiosw/finder",
+    "description": "A full-featured file manager for Laravel 12 and Livewire, inspired by elFinder",
+    "keywords": ["laravel", "livewire", "file-manager", "elfinder", "files"],
+    "license": "MIT",
+    "type": "library",
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^12.0",
+        "livewire/livewire": "^3.0",
+        "league/flysystem": "^3.0",
+        "intervention/image": "^3.0",
+        "ext-zip": "*",
+        "ext-gd": "*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.0",
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Giogiosw\\Finder\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Giogiosw\\Finder\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Giogiosw\\Finder\\FinderServiceProvider"
+            ],
+            "aliases": {
+                "Finder": "Giogiosw\\Finder\\Facades\\Finder"
+            }
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

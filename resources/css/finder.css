@@ -1,0 +1,1380 @@
+/* =============================================================================
+   Finder - File Manager for Laravel + Livewire
+   Inspired by elFinder
+   ============================================================================= */
+
+/* CSS Custom Properties */
+:root {
+    --finder-bg: #f8f9fa;
+    --finder-surface: #ffffff;
+    --finder-surface-hover: #f0f0f0;
+    --finder-surface-active: #e3e8f0;
+    --finder-border: #dee2e6;
+    --finder-border-light: #f0f0f0;
+    --finder-text: #212529;
+    --finder-text-muted: #6c757d;
+    --finder-text-light: #adb5bd;
+    --finder-primary: #0d6efd;
+    --finder-primary-hover: #0b5ed7;
+    --finder-primary-light: #cfe2ff;
+    --finder-danger: #dc3545;
+    --finder-danger-hover: #bb2d3b;
+    --finder-success: #198754;
+    --finder-warning: #ffc107;
+    --finder-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    --finder-shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+    --finder-radius: 6px;
+    --finder-radius-sm: 4px;
+    --finder-radius-lg: 10px;
+    --finder-topbar-height: 52px;
+    --finder-toolbar-height: 48px;
+    --finder-statusbar-height: 28px;
+    --finder-sidebar-width: 220px;
+    --finder-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --finder-font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+    --finder-transition: 0.15s ease;
+    --finder-grid-col: 88px;
+    --finder-grid-row: 100px;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --finder-bg: #1a1d21;
+        --finder-surface: #242830;
+        --finder-surface-hover: #2d3139;
+        --finder-surface-active: #363d47;
+        --finder-border: #3a3f48;
+        --finder-border-light: #2d3139;
+        --finder-text: #e9ecef;
+        --finder-text-muted: #8d95a0;
+        --finder-text-light: #5a6070;
+        --finder-primary-light: #1a3455;
+    }
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.finder-app {
+    margin: 0;
+    padding: 0;
+    font-family: var(--finder-font);
+    font-size: 14px;
+    color: var(--finder-text);
+    background: var(--finder-bg);
+    height: 100vh;
+    overflow: hidden;
+}
+
+[x-cloak] { display: none !important; }
+
+/* =============================================================================
+   Root Layout
+   ============================================================================= */
+
+.finder-root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--finder-bg);
+}
+
+/* =============================================================================
+   Top Bar
+   ============================================================================= */
+
+.finder-topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: var(--finder-topbar-height);
+    padding: 0 16px;
+    background: var(--finder-surface);
+    border-bottom: 1px solid var(--finder-border);
+    flex-shrink: 0;
+    z-index: 100;
+}
+
+.finder-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--finder-primary);
+    flex-shrink: 0;
+}
+
+.finder-logo-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.finder-search {
+    flex: 1;
+    max-width: 400px;
+}
+
+.finder-search-form {
+    display: flex;
+    align-items: center;
+    background: var(--finder-bg);
+    border: 1px solid var(--finder-border);
+    border-radius: 20px;
+    padding: 0 12px;
+    transition: border-color var(--finder-transition);
+}
+
+.finder-search-form:focus-within {
+    border-color: var(--finder-primary);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+.finder-search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 6px 4px;
+    font-size: 13px;
+    color: var(--finder-text);
+    outline: none;
+}
+
+.finder-search-btn,
+.finder-search-clear {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--finder-text-muted);
+    padding: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.finder-search-btn:hover,
+.finder-search-clear:hover {
+    color: var(--finder-text);
+}
+
+.finder-disk-select {
+    padding: 6px 10px;
+    border: 1px solid var(--finder-border);
+    border-radius: var(--finder-radius-sm);
+    background: var(--finder-surface);
+    color: var(--finder-text);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* =============================================================================
+   Layout
+   ============================================================================= */
+
+.finder-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* =============================================================================
+   Sidebar / Tree
+   ============================================================================= */
+
+.finder-sidebar {
+    width: var(--finder-sidebar-width);
+    flex-shrink: 0;
+    background: var(--finder-surface);
+    border-right: 1px solid var(--finder-border);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.finder-tree {
+    padding: 8px 0;
+}
+
+.finder-tree-section {
+    margin-bottom: 8px;
+}
+
+.finder-tree-header {
+    display: flex;
+    align-items: center;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--finder-text-muted);
+}
+
+.finder-tree-node {
+    user-select: none;
+}
+
+.finder-tree-node-row {
+    display: flex;
+    align-items: center;
+}
+
+.finder-tree-toggle {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--finder-text-muted);
+    border-radius: var(--finder-radius-sm);
+    margin-left: 4px;
+}
+
+.finder-tree-toggle:hover {
+    background: var(--finder-surface-hover);
+}
+
+.finder-tree-toggle--empty {
+    visibility: hidden;
+}
+
+.finder-tree-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    padding: 5px 8px 5px 4px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--finder-text);
+    font-size: 13px;
+    text-align: left;
+    border-radius: var(--finder-radius-sm);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    transition: background var(--finder-transition);
+    width: 100%;
+}
+
+.finder-tree-item:hover {
+    background: var(--finder-surface-hover);
+}
+
+.finder-tree-item--active {
+    background: var(--finder-primary-light) !important;
+    color: var(--finder-primary);
+    font-weight: 500;
+}
+
+.finder-tree-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: #FFB900;
+}
+
+.finder-tree-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.finder-tree-children {
+    /* children are indented by padding in the node */
+}
+
+/* =============================================================================
+   Content Area
+   ============================================================================= */
+
+.finder-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+}
+
+/* =============================================================================
+   Toolbar
+   ============================================================================= */
+
+.finder-toolbar-wrapper {
+    border-bottom: 1px solid var(--finder-border);
+    background: var(--finder-surface);
+    flex-shrink: 0;
+}
+
+.finder-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 8px;
+    height: var(--finder-toolbar-height);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.finder-toolbar::-webkit-scrollbar { display: none; }
+
+.finder-toolbar-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--finder-text);
+    border-radius: var(--finder-radius-sm);
+    font-size: 10px;
+    min-width: 44px;
+    transition: background var(--finder-transition);
+    white-space: nowrap;
+}
+
+.finder-toolbar-btn:hover:not(.finder-toolbar-btn--disabled) {
+    background: var(--finder-surface-hover);
+}
+
+.finder-toolbar-btn--disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.finder-toolbar-btn--danger:hover:not(.finder-toolbar-btn--disabled) {
+    background: #fee2e2;
+    color: var(--finder-danger);
+}
+
+.finder-toolbar-btn--active {
+    background: var(--finder-primary-light);
+    color: var(--finder-primary);
+}
+
+.finder-toolbar-btn--icon {
+    min-width: 32px;
+    padding: 6px;
+    flex-direction: row;
+}
+
+.finder-toolbar-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.finder-toolbar-label {
+    font-size: 10px;
+    color: var(--finder-text-muted);
+}
+
+.finder-toolbar-sep {
+    width: 1px;
+    height: 28px;
+    background: var(--finder-border);
+    margin: 0 4px;
+    flex-shrink: 0;
+}
+
+.finder-toolbar-spacer {
+    flex: 1;
+}
+
+.finder-toolbar-viewmode {
+    display: flex;
+    gap: 2px;
+}
+
+/* =============================================================================
+   Breadcrumbs
+   ============================================================================= */
+
+.finder-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 16px;
+    border-bottom: 1px solid var(--finder-border-light);
+    background: var(--finder-surface);
+    font-size: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-shrink: 0;
+}
+
+.finder-breadcrumb::-webkit-scrollbar { display: none; }
+
+.finder-breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.finder-breadcrumb-link {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--finder-primary);
+    font-size: 12px;
+    padding: 2px 4px;
+    border-radius: var(--finder-radius-sm);
+    transition: background var(--finder-transition);
+}
+
+.finder-breadcrumb-link:hover {
+    background: var(--finder-surface-hover);
+}
+
+.finder-breadcrumb-current {
+    color: var(--finder-text);
+    font-weight: 500;
+    padding: 2px 4px;
+}
+
+.finder-breadcrumb-sep {
+    color: var(--finder-text-muted);
+    font-size: 11px;
+}
+
+.finder-search-badge {
+    display: inline-flex;
+    align-items: center;
+    background: var(--finder-primary-light);
+    color: var(--finder-primary);
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    margin-left: 8px;
+}
+
+/* =============================================================================
+   Clipboard Banner
+   ============================================================================= */
+
+.finder-clipboard-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--finder-primary-light);
+    border-bottom: 1px solid var(--finder-primary);
+    font-size: 13px;
+    color: var(--finder-primary);
+    flex-shrink: 0;
+}
+
+/* =============================================================================
+   File List Wrapper
+   ============================================================================= */
+
+.finder-filelist-wrapper {
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.finder-filelist {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px;
+    position: relative;
+    background: var(--finder-bg);
+}
+
+.finder-filelist--drag-over {
+    background: var(--finder-primary-light);
+    outline: 2px dashed var(--finder-primary);
+    outline-offset: -4px;
+}
+
+/* =============================================================================
+   Grid View
+   ============================================================================= */
+
+.finder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, var(--finder-grid-col));
+    gap: 4px;
+    padding: 4px;
+}
+
+.finder-grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: var(--finder-grid-col);
+    height: var(--finder-grid-row);
+    padding: 8px 4px 4px;
+    border: 2px solid transparent;
+    border-radius: var(--finder-radius);
+    cursor: pointer;
+    user-select: none;
+    transition: background var(--finder-transition), border-color var(--finder-transition);
+    gap: 4px;
+}
+
+.finder-grid-item:hover {
+    background: var(--finder-surface-hover);
+}
+
+.finder-grid-item--selected {
+    background: var(--finder-primary-light) !important;
+    border-color: var(--finder-primary) !important;
+}
+
+.finder-grid-thumb {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.finder-grid-img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: var(--finder-radius-sm);
+    border: 1px solid var(--finder-border);
+}
+
+.finder-grid-icon {
+    width: 48px;
+    height: 48px;
+}
+
+.finder-grid-icon--folder {
+    color: #FFB900;
+}
+
+.finder-grid-filetype {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.finder-filetype-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.finder-grid-name {
+    font-size: 11px;
+    text-align: center;
+    line-height: 1.3;
+    word-break: break-word;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    width: 100%;
+    color: var(--finder-text);
+}
+
+/* =============================================================================
+   List View
+   ============================================================================= */
+
+.finder-list {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.finder-list-head {
+    position: sticky;
+    top: 0;
+    background: var(--finder-surface);
+    z-index: 1;
+    border-bottom: 2px solid var(--finder-border);
+}
+
+.finder-list-th {
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--finder-text-muted);
+    white-space: nowrap;
+}
+
+.finder-list-th--check { width: 36px; }
+.finder-list-th--name { width: auto; }
+.finder-list-th--size { width: 80px; }
+.finder-list-th--type { width: 100px; }
+.finder-list-th--modified { width: 130px; }
+
+.finder-sort-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.finder-sort-btn:hover {
+    color: var(--finder-text);
+}
+
+.finder-sort-arrow {
+    font-size: 10px;
+}
+
+.finder-list-row {
+    border-bottom: 1px solid var(--finder-border-light);
+    cursor: pointer;
+    transition: background var(--finder-transition);
+    user-select: none;
+}
+
+.finder-list-row:hover {
+    background: var(--finder-surface-hover);
+}
+
+.finder-list-row--selected {
+    background: var(--finder-primary-light) !important;
+}
+
+.finder-list-td {
+    padding: 7px 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.finder-list-td--name { max-width: 0; }
+
+.finder-list-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.finder-list-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--finder-text-muted);
+}
+
+.finder-list-icon--folder {
+    color: #FFB900;
+}
+
+.finder-list-thumb {
+    width: 18px;
+    height: 18px;
+    object-fit: cover;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.finder-list-filename {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.finder-list-lock {
+    width: 12px;
+    height: 12px;
+    color: var(--finder-text-muted);
+    flex-shrink: 0;
+}
+
+.finder-list-empty {
+    text-align: center;
+    padding: 40px !important;
+}
+
+/* =============================================================================
+   Empty State
+   ============================================================================= */
+
+.finder-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 48px;
+    color: var(--finder-text-muted);
+    font-size: 13px;
+}
+
+.finder-empty-icon {
+    width: 48px;
+    height: 48px;
+    opacity: 0.3;
+}
+
+/* =============================================================================
+   Status Bar
+   ============================================================================= */
+
+.finder-statusbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: var(--finder-statusbar-height);
+    padding: 0 16px;
+    border-top: 1px solid var(--finder-border);
+    background: var(--finder-surface);
+    font-size: 12px;
+    color: var(--finder-text-muted);
+    flex-shrink: 0;
+}
+
+/* =============================================================================
+   Context Menu
+   ============================================================================= */
+
+.finder-context-menu {
+    background: var(--finder-surface);
+    border: 1px solid var(--finder-border);
+    border-radius: var(--finder-radius);
+    box-shadow: var(--finder-shadow-lg);
+    min-width: 160px;
+    padding: 4px 0;
+    z-index: 9999;
+}
+
+.finder-context-item {
+    display: block;
+    width: 100%;
+    padding: 7px 14px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--finder-text);
+    font-size: 13px;
+    text-align: left;
+    transition: background var(--finder-transition);
+}
+
+.finder-context-item:hover {
+    background: var(--finder-surface-hover);
+}
+
+.finder-context-item--danger {
+    color: var(--finder-danger);
+}
+
+.finder-context-item--danger:hover {
+    background: #fee2e2;
+}
+
+.finder-context-sep {
+    height: 1px;
+    background: var(--finder-border);
+    margin: 4px 0;
+}
+
+/* =============================================================================
+   Modals
+   ============================================================================= */
+
+.finder-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+    backdrop-filter: blur(2px);
+}
+
+.finder-modal-overlay--full {
+    align-items: stretch;
+    padding: 0;
+}
+
+.finder-modal {
+    background: var(--finder-surface);
+    border-radius: var(--finder-radius-lg);
+    box-shadow: var(--finder-shadow-lg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    max-height: calc(100vh - 32px);
+}
+
+.finder-modal-sm  { width: 100%; max-width: 360px; }
+.finder-modal-md  { width: 100%; max-width: 520px; }
+.finder-modal-lg  { width: 100%; max-width: 680px; }
+.finder-modal-full {
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+}
+
+.finder-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--finder-border);
+    flex-shrink: 0;
+}
+
+.finder-modal-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--finder-text);
+}
+
+.finder-modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--finder-text-muted);
+    font-size: 20px;
+    line-height: 1;
+    padding: 4px;
+    border-radius: var(--finder-radius-sm);
+    transition: background var(--finder-transition);
+}
+
+.finder-modal-close:hover {
+    background: var(--finder-surface-hover);
+    color: var(--finder-text);
+}
+
+.finder-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.finder-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px 20px;
+    border-top: 1px solid var(--finder-border);
+    flex-shrink: 0;
+}
+
+/* =============================================================================
+   Upload Modal
+   ============================================================================= */
+
+.finder-upload-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 32px;
+    border: 2px dashed var(--finder-border);
+    border-radius: var(--finder-radius-lg);
+    background: var(--finder-bg);
+    transition: all var(--finder-transition);
+    cursor: default;
+    text-align: center;
+}
+
+.finder-upload-zone--drag {
+    border-color: var(--finder-primary);
+    background: var(--finder-primary-light);
+}
+
+.finder-upload-icon {
+    width: 48px;
+    height: 48px;
+    color: var(--finder-text-muted);
+}
+
+.finder-upload-text {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--finder-text);
+    margin: 0;
+}
+
+.finder-upload-subtext {
+    font-size: 13px;
+    color: var(--finder-text-muted);
+    margin: 0;
+}
+
+.finder-upload-limit {
+    font-size: 11px;
+    color: var(--finder-text-light);
+    margin: 0;
+}
+
+.finder-upload-input {
+    display: none;
+}
+
+.finder-upload-queue,
+.finder-upload-done {
+    margin-top: 16px;
+}
+
+.finder-upload-queue h4,
+.finder-upload-done h4 {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--finder-text-muted);
+    margin: 0 0 8px;
+}
+
+.finder-upload-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.finder-upload-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: var(--finder-bg);
+    border-radius: var(--finder-radius-sm);
+    font-size: 13px;
+}
+
+.finder-upload-item--done {
+    color: var(--finder-success);
+}
+
+.finder-upload-filename {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.finder-upload-filesize {
+    color: var(--finder-text-muted);
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+.finder-upload-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    color: var(--finder-text-muted);
+    font-size: 13px;
+}
+
+/* =============================================================================
+   Properties Modal
+   ============================================================================= */
+
+.finder-properties-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--finder-border);
+    margin-bottom: 16px;
+}
+
+.finder-properties-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+}
+
+.finder-properties-icon svg {
+    width: 48px;
+    height: 48px;
+}
+
+.finder-properties-name {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    word-break: break-all;
+}
+
+.finder-properties-mime {
+    font-size: 12px;
+    color: var(--finder-text-muted);
+    margin: 0;
+}
+
+.finder-properties-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.finder-properties-table th {
+    width: 100px;
+    padding: 8px 0;
+    text-align: left;
+    font-weight: 500;
+    color: var(--finder-text-muted);
+    vertical-align: top;
+    border-bottom: 1px solid var(--finder-border-light);
+}
+
+.finder-properties-table td {
+    padding: 8px 0 8px 16px;
+    color: var(--finder-text);
+    word-break: break-all;
+    border-bottom: 1px solid var(--finder-border-light);
+}
+
+/* =============================================================================
+   Text Editor
+   ============================================================================= */
+
+.finder-editor-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.finder-editor-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.finder-editor-dirty {
+    color: var(--finder-warning);
+    font-size: 16px;
+}
+
+.finder-editor-lang {
+    font-size: 11px;
+    padding: 2px 6px;
+    background: var(--finder-surface-hover);
+    border-radius: 20px;
+    color: var(--finder-text-muted);
+}
+
+.finder-editor-body {
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.finder-editor-textarea {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: var(--finder-font-mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--finder-text);
+    background: var(--finder-bg);
+    tab-size: 4;
+}
+
+.finder-editor-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between !important;
+}
+
+.finder-editor-status {
+    font-size: 12px;
+    color: var(--finder-text-muted);
+}
+
+.finder-editor-footer-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* =============================================================================
+   Buttons
+   ============================================================================= */
+
+.finder-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border: 1px solid var(--finder-border);
+    border-radius: var(--finder-radius-sm);
+    background: var(--finder-surface);
+    color: var(--finder-text);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--finder-transition);
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.finder-btn:hover:not(:disabled) {
+    background: var(--finder-surface-hover);
+    border-color: var(--finder-text-muted);
+}
+
+.finder-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.finder-btn-primary {
+    background: var(--finder-primary);
+    border-color: var(--finder-primary);
+    color: white;
+}
+
+.finder-btn-primary:hover:not(:disabled) {
+    background: var(--finder-primary-hover);
+    border-color: var(--finder-primary-hover);
+}
+
+.finder-btn-danger {
+    background: var(--finder-danger);
+    border-color: var(--finder-danger);
+    color: white;
+}
+
+.finder-btn-danger:hover:not(:disabled) {
+    background: var(--finder-danger-hover);
+    border-color: var(--finder-danger-hover);
+}
+
+.finder-btn-sm {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+.finder-btn-xs {
+    padding: 2px 6px;
+    font-size: 11px;
+}
+
+/* =============================================================================
+   Form Elements
+   ============================================================================= */
+
+.finder-form-group {
+    margin-bottom: 16px;
+}
+
+.finder-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--finder-text);
+    margin-bottom: 6px;
+}
+
+.finder-input,
+.finder-select {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--finder-border);
+    border-radius: var(--finder-radius-sm);
+    background: var(--finder-surface);
+    color: var(--finder-text);
+    font-size: 13px;
+    transition: border-color var(--finder-transition);
+}
+
+.finder-input:focus,
+.finder-select:focus {
+    outline: none;
+    border-color: var(--finder-primary);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+.finder-input--error {
+    border-color: var(--finder-danger);
+}
+
+.finder-input--error:focus {
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+}
+
+.finder-error-msg {
+    font-size: 12px;
+    color: var(--finder-danger);
+    margin: 4px 0 0;
+}
+
+.finder-hint {
+    font-size: 12px;
+    color: var(--finder-text-muted);
+    margin: 4px 0 0;
+}
+
+/* =============================================================================
+   Alerts
+   ============================================================================= */
+
+.finder-alert {
+    padding: 12px 16px;
+    border-radius: var(--finder-radius-sm);
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+.finder-alert-danger {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.finder-alert-success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+}
+
+/* =============================================================================
+   Spinners
+   ============================================================================= */
+
+.finder-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--finder-border);
+    border-top-color: var(--finder-primary);
+    border-radius: 50%;
+    animation: finder-spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+.finder-spinner-sm {
+    width: 14px;
+    height: 14px;
+}
+
+.finder-spinner-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 32px;
+    color: var(--finder-text-muted);
+}
+
+@keyframes finder-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* =============================================================================
+   Icons
+   ============================================================================= */
+
+.finder-icon-sm { width: 16px; height: 16px; }
+.finder-icon-xs { width: 12px; height: 12px; }
+
+.finder-icon-success { color: var(--finder-success); }
+.finder-icon-danger  { color: var(--finder-danger); }
+
+/* =============================================================================
+   Scrollbars
+   ============================================================================= */
+
+.finder-sidebar::-webkit-scrollbar,
+.finder-filelist::-webkit-scrollbar,
+.finder-modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.finder-sidebar::-webkit-scrollbar-track,
+.finder-filelist::-webkit-scrollbar-track,
+.finder-modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.finder-sidebar::-webkit-scrollbar-thumb,
+.finder-filelist::-webkit-scrollbar-thumb,
+.finder-modal-body::-webkit-scrollbar-thumb {
+    background: var(--finder-border);
+    border-radius: 3px;
+}
+
+.finder-sidebar::-webkit-scrollbar-thumb:hover,
+.finder-filelist::-webkit-scrollbar-thumb:hover,
+.finder-modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--finder-text-muted);
+}
+
+/* =============================================================================
+   Responsive
+   ============================================================================= */
+
+@media (max-width: 768px) {
+    :root {
+        --finder-sidebar-width: 0;
+    }
+
+    .finder-sidebar {
+        display: none;
+    }
+
+    .finder-topbar {
+        padding: 0 8px;
+    }
+
+    .finder-toolbar-label {
+        display: none;
+    }
+
+    .finder-toolbar-btn {
+        min-width: 36px;
+        padding: 6px;
+    }
+
+    .finder-list-th--size,
+    .finder-list-th--type,
+    .finder-list-th--modified,
+    .finder-list-td--size,
+    .finder-list-td--type,
+    .finder-list-td--modified {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --finder-grid-col: 76px;
+        --finder-grid-row: 88px;
+    }
+}
