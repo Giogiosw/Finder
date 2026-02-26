@@ -749,6 +749,30 @@
     flex-shrink: 0;
 }
 
+.finder-statusbar-about {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--finder-text-light);
+}
+
+.finder-statusbar-dot {
+    opacity: 0.5;
+}
+
+.finder-statusbar-link {
+    color: var(--finder-text-light);
+    text-decoration: none;
+    transition: color var(--finder-transition);
+}
+
+.finder-statusbar-link:hover {
+    color: var(--finder-primary);
+    text-decoration: underline;
+}
+
 /* =============================================================================
    Context Menu
    ============================================================================= */

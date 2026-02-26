@@ -16,7 +16,7 @@
                     </svg>
                     <h3 class="finder-modal-title">{{ $filename }}</h3>
                     @if($isDirty)
-                        <span class="finder-editor-dirty" title="Unsaved changes">●</span>
+                        <span class="finder-editor-dirty" title="{{ __('finder::finder.unsaved_indicator') }}">●</span>
                     @endif
                     <span class="finder-editor-lang">{{ $this->language }}</span>
                 </div>
@@ -25,15 +25,15 @@
                         wire:click="save"
                         class="finder-btn finder-btn-sm finder-btn-primary"
                         @disabled($isSaving || !$isDirty)
-                        title="Save (Ctrl+S)"
+                        title="{{ __('finder::finder.save_title') }}"
                     >
                         @if($isSaving)
                             <span class="finder-spinner finder-spinner-sm"></span>
                         @else
-                            Save
+                            {{ __('finder::finder.save') }}
                         @endif
                     </button>
-                    <button wire:click="close" class="finder-modal-close" title="Close">&times;</button>
+                    <button wire:click="close" class="finder-modal-close" title="{{ __('finder::finder.close') }}">&times;</button>
                 </div>
             </div>
 
@@ -58,15 +58,15 @@
             <div class="finder-modal-footer finder-editor-footer">
                 <span class="finder-editor-status">
                     @if($isDirty)
-                        Unsaved changes
+                        {{ __('finder::finder.unsaved_indicator') }}
                     @else
-                        Saved
+                        {{ __('finder::finder.saved') }}
                     @endif
                 </span>
                 <div class="finder-editor-footer-actions">
-                    <button wire:click="close" class="finder-btn finder-btn-sm">Cancel</button>
+                    <button wire:click="close" class="finder-btn finder-btn-sm">{{ __('finder::finder.cancel') }}</button>
                     <button wire:click="saveAndClose" class="finder-btn finder-btn-sm finder-btn-primary" @disabled($isSaving)>
-                        Save & Close
+                        {{ __('finder::finder.save_and_close') }}
                     </button>
                 </div>
             </div>
@@ -82,15 +82,15 @@
         >
             <div class="finder-modal finder-modal-sm">
                 <div class="finder-modal-header">
-                    <h3 class="finder-modal-title">Unsaved Changes</h3>
+                    <h3 class="finder-modal-title">{{ __('finder::finder.unsaved_title') }}</h3>
                 </div>
                 <div class="finder-modal-body">
-                    <p>You have unsaved changes. Are you sure you want to close without saving?</p>
+                    <p>{{ __('finder::finder.unsaved_body') }}</p>
                 </div>
                 <div class="finder-modal-footer">
-                    <button x-on:click="confirmClose = false" class="finder-btn">Continue Editing</button>
-                    <button x-on:click="confirmClose = false; $wire.saveAndClose()" class="finder-btn finder-btn-primary">Save & Close</button>
-                    <button x-on:click="confirmClose = false; $wire.forceClose()" class="finder-btn finder-btn-danger">Discard & Close</button>
+                    <button x-on:click="confirmClose = false" class="finder-btn">{{ __('finder::finder.continue_editing') }}</button>
+                    <button x-on:click="confirmClose = false; $wire.saveAndClose()" class="finder-btn finder-btn-primary">{{ __('finder::finder.save_and_close') }}</button>
+                    <button x-on:click="confirmClose = false; $wire.forceClose()" class="finder-btn finder-btn-danger">{{ __('finder::finder.discard_close') }}</button>
                 </div>
             </div>
         </div>

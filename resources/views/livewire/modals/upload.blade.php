@@ -3,8 +3,8 @@
     <div class="finder-modal-overlay" x-data x-on:keydown.escape.window="$wire.close()">
         <div class="finder-modal finder-modal-lg">
             <div class="finder-modal-header">
-                <h3 class="finder-modal-title">Upload Files</h3>
-                <button wire:click="close" class="finder-modal-close" title="Close">&times;</button>
+                <h3 class="finder-modal-title">{{ __('finder::finder.upload_modal_title') }}</h3>
+                <button wire:click="close" class="finder-modal-close" title="{{ __('finder::finder.close') }}">&times;</button>
             </div>
 
             <div class="finder-modal-body">
@@ -21,10 +21,10 @@
                         <path d="M24 8v24M14 18l10-10 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M8 36h32" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
                     </svg>
-                    <p class="finder-upload-text">Drag & drop files here</p>
-                    <p class="finder-upload-subtext">or</p>
+                    <p class="finder-upload-text">{{ __('finder::finder.drag_drop') }}</p>
+                    <p class="finder-upload-subtext">{{ __('finder::finder.or') }}</p>
                     <label class="finder-btn finder-btn-primary">
-                        Browse files
+                        {{ __('finder::finder.browse_files') }}
                         <input
                             type="file"
                             wire:model="uploads"
@@ -33,14 +33,14 @@
                         >
                     </label>
                     <p class="finder-upload-limit">
-                        Max file size: {{ round(config('finder.upload.max_size', 52428800) / 1024 / 1024, 0) }}MB
+                        {{ __('finder::finder.max_size', ['size' => round(config('finder.upload.max_size', 52428800) / 1024 / 1024, 0)]) }}
                     </p>
                 </div>
 
                 {{-- Upload Queue --}}
                 @if(!empty($uploads))
                 <div class="finder-upload-queue">
-                    <h4>Ready to upload:</h4>
+                    <h4>{{ __('finder::finder.ready_to_upload') }}</h4>
                     <ul class="finder-upload-list">
                         @foreach($uploads as $file)
                         <li class="finder-upload-item">
@@ -55,7 +55,7 @@
                 {{-- Uploaded files --}}
                 @if(!empty($uploadedFiles))
                 <div class="finder-upload-done">
-                    <h4>Uploaded successfully:</h4>
+                    <h4>{{ __('finder::finder.uploaded_ok') }}</h4>
                     <ul class="finder-upload-list">
                         @foreach($uploadedFiles as $file)
                         <li class="finder-upload-item finder-upload-item--done">
@@ -72,7 +72,7 @@
                 {{-- Errors --}}
                 @if(!empty($errors))
                 <div class="finder-alert finder-alert-danger">
-                    <strong>Failed to upload:</strong>
+                    <strong>{{ __('finder::finder.upload_failed') }}</strong>
                     <ul>
                         @foreach($errors as $err)
                             <li>{{ $err }}</li>
@@ -85,16 +85,16 @@
                 @if($isUploading)
                 <div class="finder-upload-progress">
                     <div class="finder-spinner"></div>
-                    <span>Uploading...</span>
+                    <span>{{ __('finder::finder.uploading') }}</span>
                 </div>
                 @endif
             </div>
 
             <div class="finder-modal-footer">
-                <button wire:click="close" class="finder-btn">Cancel</button>
+                <button wire:click="close" class="finder-btn">{{ __('finder::finder.cancel') }}</button>
                 @if(!empty($uploads) && !$isUploading)
                     <button wire:click="uploadFiles" class="finder-btn finder-btn-primary">
-                        Upload {{ count($uploads) }} file(s)
+                        {{ __('finder::finder.upload_n_files', ['count' => count($uploads)]) }}
                     </button>
                 @endif
             </div>

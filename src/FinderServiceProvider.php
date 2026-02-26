@@ -17,6 +17,8 @@ use Giogiosw\Finder\Http\Livewire\Modals\EditTextModal;
 
 class FinderServiceProvider extends ServiceProvider
 {
+    public const VERSION = '1.0';
+
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/finder.php', 'finder');
@@ -30,6 +32,7 @@ class FinderServiceProvider extends ServiceProvider
     {
         $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'finder');
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'finder');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
         // Register Livewire components
@@ -61,6 +64,10 @@ class FinderServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__ . '/../database/migrations' => database_path('migrations'),
             ], 'finder-migrations');
+
+            $this->publishes([
+                __DIR__ . '/../resources/lang' => lang_path('vendor/finder'),
+            ], 'finder-lang');
         }
     }
 }

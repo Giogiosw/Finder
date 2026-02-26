@@ -3,8 +3,8 @@
     <div class="finder-modal-overlay" x-data x-on:keydown.escape.window="$wire.close()">
         <div class="finder-modal finder-modal-md">
             <div class="finder-modal-header">
-                <h3 class="finder-modal-title">Properties</h3>
-                <button wire:click="close" class="finder-modal-close" title="Close">&times;</button>
+                <h3 class="finder-modal-title">{{ __('finder::finder.properties_modal_title') }}</h3>
+                <button wire:click="close" class="finder-modal-close" title="{{ __('finder::finder.close') }}">&times;</button>
             </div>
 
             <div class="finder-modal-body">
@@ -38,20 +38,20 @@
                     <table class="finder-properties-table">
                         @if(isset($fileInfo['path']))
                         <tr>
-                            <th>Location</th>
+                            <th>{{ __('finder::finder.prop_location') }}</th>
                             <td><code>{{ dirname($fileInfo['path']) }}</code></td>
                         </tr>
                         @endif
 
                         <tr>
-                            <th>Size</th>
+                            <th>{{ __('finder::finder.prop_size') }}</th>
                             <td>
                                 {{ $fileInfo['size_human'] ?? '' }}
                                 @if(isset($fileInfo['is_dir']) && $fileInfo['is_dir'] && !$directorySize)
                                     <button
                                         wire:click="calculateDirectorySize"
                                         class="finder-btn finder-btn-xs"
-                                    >Calculate</button>
+                                    >{{ __('finder::finder.prop_calculate') }}</button>
                                 @endif
                                 @if($calculatingSize)
                                     <span class="finder-spinner finder-spinner-sm"></span>
@@ -61,31 +61,31 @@
 
                         @if(!empty($fileInfo['modified_human']))
                         <tr>
-                            <th>Modified</th>
+                            <th>{{ __('finder::finder.prop_modified') }}</th>
                             <td>{{ $fileInfo['modified_human'] }}</td>
                         </tr>
                         @endif
 
                         @if(isset($fileInfo['extension']) && $fileInfo['extension'])
                         <tr>
-                            <th>Type</th>
-                            <td>{{ strtoupper($fileInfo['extension']) }} file</td>
+                            <th>{{ __('finder::finder.prop_type') }}</th>
+                            <td>{{ __('finder::finder.prop_file_type', ['ext' => strtoupper($fileInfo['extension'])]) }}</td>
                         </tr>
                         @endif
 
                         @if(isset($fileInfo['dimensions']))
                         <tr>
-                            <th>Dimensions</th>
+                            <th>{{ __('finder::finder.prop_dimensions') }}</th>
                             <td>{{ $fileInfo['dimensions'] }}</td>
                         </tr>
                         @endif
 
                         <tr>
-                            <th>Permissions</th>
+                            <th>{{ __('finder::finder.prop_permissions') }}</th>
                             <td>
-                                @if($fileInfo['read'] ?? true) Read @endif
-                                @if($fileInfo['write'] ?? true) Write @endif
-                                @if($fileInfo['locked'] ?? false) (Locked) @endif
+                                @if($fileInfo['read'] ?? true) {{ __('finder::finder.prop_read') }} @endif
+                                @if($fileInfo['write'] ?? true) {{ __('finder::finder.prop_write') }} @endif
+                                @if($fileInfo['locked'] ?? false) {{ __('finder::finder.prop_locked') }} @endif
                             </td>
                         </tr>
                     </table>
@@ -93,13 +93,13 @@
                 @else
                 <div class="finder-spinner-center">
                     <div class="finder-spinner"></div>
-                    <p>Loading...</p>
+                    <p>{{ __('finder::finder.loading') }}</p>
                 </div>
                 @endif
             </div>
 
             <div class="finder-modal-footer">
-                <button wire:click="close" class="finder-btn">Close</button>
+                <button wire:click="close" class="finder-btn">{{ __('finder::finder.close') }}</button>
             </div>
         </div>
     </div>

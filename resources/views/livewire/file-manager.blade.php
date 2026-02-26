@@ -8,6 +8,8 @@
         clipboardCount: 0,
         clipboardAction: '',
         activeModal: '',
+        clipboardCopy: '{{ __('finder::finder.clipboard_copy') }}',
+        clipboardCut: '{{ __('finder::finder.clipboard_cut') }}',
     }"
     x-on:finder:open-modal.window="activeModal = $event.detail.modal"
     x-on:finder:selection-changed.window="selected = $event.detail.selected"
@@ -39,15 +41,15 @@
                 <input
                     type="text"
                     wire:model="searchQuery"
-                    placeholder="Search files..."
+                    placeholder="{{ __('finder::finder.search_placeholder') }}"
                     class="finder-search-input"
                 >
                 @if($isSearching)
-                    <button type="button" wire:click="clearSearch" class="finder-search-clear" title="Clear search">
+                    <button type="button" wire:click="clearSearch" class="finder-search-clear" title="{{ __('finder::finder.clear_search') }}">
                         ✕
                     </button>
                 @else
-                    <button type="submit" class="finder-search-btn" title="Search">
+                    <button type="submit" class="finder-search-btn" title="{{ __('finder::finder.search') }}">
                         <svg viewBox="0 0 20 20" fill="currentColor" class="finder-icon-sm">
                             <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
                         </svg>
@@ -105,7 +107,7 @@
                 @endforeach
 
                 @if($isSearching)
-                    <span class="finder-search-badge">Search: "{{ $searchQuery }}"</span>
+                    <span class="finder-search-badge">{{ __('finder::finder.search_badge', ['query' => $searchQuery]) }}</span>
                 @endif
             </nav>
 
@@ -115,9 +117,9 @@
                 x-transition
                 class="finder-clipboard-banner"
             >
-                <span x-text="clipboardCount + ' item(s) ready to ' + clipboardAction"></span>
-                <button wire:click="paste" class="finder-btn finder-btn-sm finder-btn-primary">Paste here</button>
-                <button x-on:click="showClipboardBanner = false; clipboardCount = 0" class="finder-btn finder-btn-sm">Cancel</button>
+                <span x-text="(clipboardAction === 'copy' ? clipboardCopy : clipboardCut).replace(':count', clipboardCount)"></span>
+                <button wire:click="paste" class="finder-btn finder-btn-sm finder-btn-primary">{{ __('finder::finder.paste_here') }}</button>
+                <button x-on:click="showClipboardBanner = false; clipboardCount = 0" class="finder-btn finder-btn-sm">{{ __('finder::finder.cancel') }}</button>
             </div>
 
             {{-- File List --}}
@@ -135,11 +137,20 @@
     {{-- Status Bar --}}
     <div class="finder-statusbar">
         <span class="finder-statusbar-info">
-            {{ count($selected) > 0 ? count($selected) . ' item(s) selected' : count($this->items) . ' item(s)' }}
+            {{ count($selected) > 0
+                ? __('finder::finder.n_items_selected', ['count' => count($selected)])
+                : __('finder::finder.n_items', ['count' => count($this->items)]) }}
         </span>
         @if($isSearching)
-            <span class="finder-statusbar-search">Search results for "{{ $searchQuery }}"</span>
+            <span class="finder-statusbar-search">{{ __('finder::finder.search_results', ['query' => $searchQuery]) }}</span>
         @endif
+        <div class="finder-statusbar-about">
+            <span>{{ __('finder::finder.about_version', ['version' => \Giogiosw\Finder\FinderServiceProvider::VERSION]) }}</span>
+            <span class="finder-statusbar-dot">·</span>
+            <a href="https://devgd.it" target="_blank" rel="noopener noreferrer" class="finder-statusbar-link">devgd.it</a>
+            <span class="finder-statusbar-dot">·</span>
+            <span>Giovanni D'Ippolito</span>
+        </div>
     </div>
 
     {{-- Modals --}}
@@ -159,17 +170,17 @@
     >
         <div class="finder-modal finder-modal-sm">
             <div class="finder-modal-header">
-                <h3 class="finder-modal-title">Confirm Delete</h3>
+                <h3 class="finder-modal-title">{{ __('finder::finder.confirm_delete_title') }}</h3>
             </div>
             <div class="finder-modal-body">
-                <p>Are you sure you want to delete {{ count($selected) }} item(s)? This action cannot be undone.</p>
+                <p>{{ __('finder::finder.confirm_delete_body', ['count' => count($selected)]) }}</p>
             </div>
             <div class="finder-modal-footer">
-                <button x-on:click="showDeleteConfirm = false" class="finder-btn">Cancel</button>
+                <button x-on:click="showDeleteConfirm = false" class="finder-btn">{{ __('finder::finder.cancel') }}</button>
                 <button
                     x-on:click="showDeleteConfirm = false; $wire.deleteSelected()"
                     class="finder-btn finder-btn-danger"
-                >Delete</button>
+                >{{ __('finder::finder.delete') }}</button>
             </div>
         </div>
     </div>

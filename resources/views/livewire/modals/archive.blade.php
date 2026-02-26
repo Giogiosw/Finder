@@ -4,9 +4,9 @@
         <div class="finder-modal finder-modal-md">
             <div class="finder-modal-header">
                 <h3 class="finder-modal-title">
-                    {{ $mode === 'create' ? 'Create Archive' : 'Extract Archive' }}
+                    {{ $mode === 'create' ? __('finder::finder.create_archive_title') : __('finder::finder.extract_archive_title') }}
                 </h3>
-                <button wire:click="close" class="finder-modal-close" title="Close">&times;</button>
+                <button wire:click="close" class="finder-modal-close" title="{{ __('finder::finder.close') }}">&times;</button>
             </div>
 
             <div class="finder-modal-body">
@@ -16,7 +16,7 @@
 
                 @if($mode === 'create')
                     <div class="finder-form-group">
-                        <label class="finder-label">Archive Name</label>
+                        <label class="finder-label">{{ __('finder::finder.archive_name_label') }}</label>
                         <input
                             type="text"
                             wire:model="archiveName"
@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="finder-form-group">
-                        <label class="finder-label">Format</label>
+                        <label class="finder-label">{{ __('finder::finder.format_label') }}</label>
                         <select wire:model.live="archiveType" class="finder-select">
                             <option value="zip">ZIP</option>
                             <option value="tar.gz">TAR.GZ</option>
@@ -34,18 +34,18 @@
                     </div>
 
                     <div class="finder-form-group">
-                        <label class="finder-label">Items to archive</label>
-                        <p class="finder-hint">{{ count($targetHashes) }} item(s) selected</p>
+                        <label class="finder-label">{{ __('finder::finder.items_to_archive') }}</label>
+                        <p class="finder-hint">{{ __('finder::finder.n_items_selected_arch', ['count' => count($targetHashes)]) }}</p>
                     </div>
 
                 @else
-                    <p>Extract the selected archive to the current directory?</p>
-                    <p class="finder-hint">Contents will be extracted to: <code>{{ $targetPath }}</code></p>
+                    <p>{{ __('finder::finder.extract_confirm') }}</p>
+                    <p class="finder-hint">{{ __('finder::finder.extract_to') }} <code>{{ $targetPath }}</code></p>
                 @endif
             </div>
 
             <div class="finder-modal-footer">
-                <button wire:click="close" class="finder-btn" @disabled($isProcessing)>Cancel</button>
+                <button wire:click="close" class="finder-btn" @disabled($isProcessing)>{{ __('finder::finder.cancel') }}</button>
                 <button
                     wire:click="process"
                     class="finder-btn finder-btn-primary"
@@ -54,7 +54,7 @@
                     @if($isProcessing)
                         <span class="finder-spinner finder-spinner-sm"></span>
                     @endif
-                    {{ $mode === 'create' ? 'Create Archive' : 'Extract' }}
+                    {{ $mode === 'create' ? __('finder::finder.create_archive_btn') : __('finder::finder.extract_btn') }}
                 </button>
             </div>
         </div>
