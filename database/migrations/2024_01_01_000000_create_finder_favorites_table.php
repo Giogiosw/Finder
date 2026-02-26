@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('disk', 50);
-            $table->string('path', 1024);
+            $table->string('path', 500);
             $table->string('name', 255)->nullable(); // Custom label
             $table->unsignedInteger('order')->default(0);
             $table->timestamps();
