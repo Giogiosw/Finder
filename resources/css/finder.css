@@ -37,7 +37,7 @@
     --finder-grid-row: 100px;
 }
 
-/* Dark mode */
+/* Dark mode - system preference (fallback when no manual override) */
 @media (prefers-color-scheme: dark) {
     :root {
         --finder-bg: #1a1d21;
@@ -51,6 +51,34 @@
         --finder-text-light: #5a6070;
         --finder-primary-light: #1a3455;
     }
+}
+
+/* Manual dark theme override (data-theme="dark") */
+.finder-root[data-theme="dark"] {
+    --finder-bg: #1a1d21;
+    --finder-surface: #242830;
+    --finder-surface-hover: #2d3139;
+    --finder-surface-active: #363d47;
+    --finder-border: #3a3f48;
+    --finder-border-light: #2d3139;
+    --finder-text: #e9ecef;
+    --finder-text-muted: #8d95a0;
+    --finder-text-light: #5a6070;
+    --finder-primary-light: #1a3455;
+}
+
+/* Manual light theme override (data-theme="light") */
+.finder-root[data-theme="light"] {
+    --finder-bg: #f8f9fa;
+    --finder-surface: #ffffff;
+    --finder-surface-hover: #f0f0f0;
+    --finder-surface-active: #e3e8f0;
+    --finder-border: #dee2e6;
+    --finder-border-light: #f0f0f0;
+    --finder-text: #212529;
+    --finder-text-muted: #6c757d;
+    --finder-text-light: #adb5bd;
+    --finder-primary-light: #cfe2ff;
 }
 
 /* Reset & Base */
@@ -771,6 +799,55 @@
 .finder-statusbar-link:hover {
     color: var(--finder-primary);
     text-decoration: underline;
+}
+
+/* Theme toggle button */
+.finder-theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--finder-border);
+    border-radius: var(--finder-radius-sm);
+    background: transparent;
+    color: var(--finder-text-muted);
+    cursor: pointer;
+    transition: background var(--finder-transition), color var(--finder-transition), border-color var(--finder-transition);
+    padding: 0;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.finder-theme-toggle:hover {
+    background: var(--finder-surface-hover);
+    color: var(--finder-text);
+}
+
+.finder-theme-toggle svg {
+    width: 13px;
+    height: 13px;
+    display: block;
+}
+
+/* Show moon icon in dark mode, sun icon in light mode */
+.finder-root[data-theme="dark"] .finder-icon-sun,
+.finder-root:not([data-theme="light"]) .finder-icon-sun {
+    display: none;
+}
+.finder-root[data-theme="light"] .finder-icon-moon {
+    display: none;
+}
+.finder-root[data-theme="light"] .finder-icon-sun {
+    display: block;
+}
+@media (prefers-color-scheme: dark) {
+    .finder-root:not([data-theme]) .finder-icon-sun { display: none; }
+    .finder-root:not([data-theme]) .finder-icon-moon { display: block; }
+}
+@media (prefers-color-scheme: light) {
+    .finder-root:not([data-theme]) .finder-icon-moon { display: none; }
+    .finder-root:not([data-theme]) .finder-icon-sun { display: block; }
 }
 
 /* =============================================================================
