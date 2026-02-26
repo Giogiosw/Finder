@@ -9,9 +9,11 @@
         "laravel/framework": "^12.0",
         "livewire/livewire": "^3.0",
         "league/flysystem": "^3.0",
-        "intervention/image": "^3.0",
         "ext-zip": "*",
         "ext-gd": "*"
+    },
+    "suggest": {
+        "intervention/image": "Required for advanced image editing (resize, rotate, crop). Supports ^2.7 or ^3.0."
     },
     "require-dev": {
         "orchestra/testbench": "^10.0",
