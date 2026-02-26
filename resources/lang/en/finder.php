@@ -98,6 +98,7 @@ return [
     'upload_failed'       => 'Failed to upload:',
     'uploading'           => 'Uploading...',
     'upload_n_files'      => 'Upload :count file(s)',
+    'upload_storage_error' => 'Storage configuration error. Please contact the administrator.',
 
     // -------------------------------------------------------------------------
     // Create folder / file modal

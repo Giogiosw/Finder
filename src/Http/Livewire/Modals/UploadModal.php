@@ -67,7 +67,14 @@ class UploadModal extends Component
         $this->isUploading = true;
         $this->errors = [];
 
-        $driver = $this->finderManager->driver($this->disk);
+        try {
+            $driver = $this->finderManager->driver($this->disk);
+        } catch (\Throwable $e) {
+            $this->errors[] = __('finder::finder.upload_storage_error');
+            $this->isUploading = false;
+            return;
+        }
+
         $added = [];
 
         foreach ($this->uploads as $file) {

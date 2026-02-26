@@ -98,6 +98,7 @@ return [
     'upload_failed'       => 'Caricamento fallito:',
     'uploading'           => 'Caricamento in corso...',
     'upload_n_files'      => 'Carica :count file',
+    'upload_storage_error' => 'Errore di configurazione dello storage. Contatta l\'amministratore.',
 
     // -------------------------------------------------------------------------
     // Modale nuova cartella / file

@@ -27,9 +27,9 @@
                         {{ __('finder::finder.browse_files') }}
                         <input
                             type="file"
-                            wire:model="uploads"
                             multiple
                             class="finder-upload-input"
+                            x-on:change="$wire.uploadMultiple('uploads', $event.target.files)"
                         >
                     </label>
                     <p class="finder-upload-limit">
