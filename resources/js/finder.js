@@ -212,9 +212,57 @@
     }
 
     /**
+     * Theme management (dark / light)
+     */
+    function getFinderRoot() {
+        return document.querySelector('.finder-root');
+    }
+
+    function applyStoredTheme() {
+        const root = getFinderRoot();
+        if (!root) return;
+
+        const stored = localStorage.getItem('finder-theme');
+        if (stored === 'dark' || stored === 'light') {
+            root.dataset.theme = stored;
+        } else {
+            // Auto-detect system preference
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            root.dataset.theme = prefersDark ? 'dark' : 'light';
+        }
+    }
+
+    window.finderToggleTheme = function () {
+        const root = getFinderRoot();
+        if (!root) return;
+
+        const current = root.dataset.theme || 'dark';
+        const next = current === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        localStorage.setItem('finder-theme', next);
+    };
+
+    function initTheme() {
+        applyStoredTheme();
+
+        // Re-apply after Livewire component updates (morphing may reset data-theme)
+        document.addEventListener('livewire:update', function () {
+            requestAnimationFrame(applyStoredTheme);
+        });
+
+        // Listen for OS preference changes (when no manual override)
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
+            if (!localStorage.getItem('finder-theme')) {
+                applyStoredTheme();
+            }
+        });
+    }
+
+    /**
      * Initialize everything
      */
     function init() {
+        initTheme();
         initKeyboardShortcuts();
         initDragAndDrop();
         initItemDrag();
