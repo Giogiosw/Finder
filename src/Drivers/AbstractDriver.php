@@ -181,7 +181,8 @@ abstract class AbstractDriver implements DriverInterface
             // Handle duplicate names
             $path = $this->getUniqueFilename($path);
 
-            $this->storage->put($path, file_get_contents($file->getRealPath()));
+            $dir = dirname($path);
+            $this->storage->putFileAs($dir === '.' ? '/' : $dir, $file, basename($path));
 
             return $this->info($path);
         } catch (\Throwable $e) {
