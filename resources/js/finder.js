@@ -1,6 +1,6 @@
 /**
  * Finder - File Manager for Laravel + Livewire
- * Inspired by elFinder
+ * Finder — Laravel & Livewire File Manager
  */
 
 (function () {

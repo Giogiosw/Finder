@@ -1,6 +1,6 @@
 /* =============================================================================
    Finder - File Manager for Laravel + Livewire
-   Inspired by elFinder
+   Finder — Laravel & Livewire File Manager
    ============================================================================= */
 
 /* CSS Custom Properties */
@@ -64,6 +64,7 @@
     --finder-text: #e9ecef;
     --finder-text-muted: #8d95a0;
     --finder-text-light: #5a6070;
+    --finder-about-text: #ffffff;
     --finder-primary-light: #1a3455;
 }
 
@@ -78,6 +79,7 @@
     --finder-text: #212529;
     --finder-text-muted: #6c757d;
     --finder-text-light: #adb5bd;
+    --finder-about-text: #000000;
     --finder-primary-light: #cfe2ff;
 }
 
@@ -782,8 +784,8 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 11px;
-    color: var(--finder-text-light);
+    font-size: 13px;
+    color: var(--finder-about-text);
 }
 
 .finder-statusbar-dot {
@@ -791,7 +793,7 @@
 }
 
 .finder-statusbar-link {
-    color: var(--finder-text-light);
+    color: var(--finder-about-text);
     text-decoration: none;
     transition: color var(--finder-transition);
 }
