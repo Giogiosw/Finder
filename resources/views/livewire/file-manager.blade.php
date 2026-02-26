@@ -3,6 +3,7 @@
     x-data="{
         selected: @entangle('selected'),
         viewMode: @entangle('viewMode'),
+        theme: localStorage.getItem('finder-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
         showDeleteConfirm: false,
         showClipboardBanner: false,
         clipboardCount: 0,
@@ -11,6 +12,11 @@
         clipboardCopy: '{{ __('finder::finder.clipboard_copy') }}',
         clipboardCut: '{{ __('finder::finder.clipboard_cut') }}',
     }"
+    x-bind:data-theme="theme"
+    x-on:finder:toggle-theme.window="
+        theme = (theme === 'dark' ? 'light' : 'dark');
+        localStorage.setItem('finder-theme', theme);
+    "
     x-on:finder:open-modal.window="activeModal = $event.detail.modal"
     x-on:finder:selection-changed.window="selected = $event.detail.selected"
     x-on:finder:confirm-delete.window="showDeleteConfirm = true"

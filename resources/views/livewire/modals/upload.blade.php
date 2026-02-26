@@ -14,7 +14,7 @@
                     x-data="{ dragging: false }"
                     x-on:dragover.prevent="dragging = true"
                     x-on:dragleave="dragging = false"
-                    x-on:drop.prevent="dragging = false; $wire.upload('uploads', $event.dataTransfer.files)"
+                    x-on:drop.prevent="dragging = false; $wire.uploadMultiple('uploads', $event.dataTransfer.files)"
                     :class="{ 'finder-upload-zone--drag': dragging }"
                 >
                     <svg class="finder-upload-icon" viewBox="0 0 48 48" fill="none">
