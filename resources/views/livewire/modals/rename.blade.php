@@ -3,13 +3,13 @@
     <div class="finder-modal-overlay" x-data x-on:keydown.escape.window="$wire.close()">
         <div class="finder-modal finder-modal-sm">
             <div class="finder-modal-header">
-                <h3 class="finder-modal-title">Rename</h3>
-                <button wire:click="close" class="finder-modal-close" title="Close">&times;</button>
+                <h3 class="finder-modal-title">{{ __('finder::finder.rename_modal_title') }}</h3>
+                <button wire:click="close" class="finder-modal-close" title="{{ __('finder::finder.close') }}">&times;</button>
             </div>
 
             <div class="finder-modal-body">
                 <div class="finder-form-group">
-                    <label class="finder-label">New Name</label>
+                    <label class="finder-label">{{ __('finder::finder.new_name') }}</label>
                     <input
                         type="text"
                         wire:model="name"
@@ -33,8 +33,8 @@
             </div>
 
             <div class="finder-modal-footer">
-                <button wire:click="close" class="finder-btn">Cancel</button>
-                <button wire:click="rename" class="finder-btn finder-btn-primary">Rename</button>
+                <button wire:click="close" class="finder-btn">{{ __('finder::finder.cancel') }}</button>
+                <button wire:click="rename" class="finder-btn finder-btn-primary">{{ __('finder::finder.rename') }}</button>
             </div>
         </div>
     </div>

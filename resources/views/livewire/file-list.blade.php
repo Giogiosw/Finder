@@ -57,7 +57,7 @@
                 <rect x="4" y="8" width="40" height="32" rx="2" stroke="currentColor" stroke-width="2"/>
                 <path d="M4 14h40" stroke="currentColor" stroke-width="2"/>
             </svg>
-            <p>This folder is empty</p>
+            <p>{{ __('finder::finder.empty_folder') }}</p>
         </div>
         @endforelse
     </div>
@@ -72,7 +72,7 @@
                 </th>
                 <th class="finder-list-th finder-list-th--name">
                     <button wire:click="setSortBy('name')" class="finder-sort-btn">
-                        Name
+                        {{ __('finder::finder.col_name') }}
                         @if($sortBy === 'name')
                             <span class="finder-sort-arrow">{{ $sortDir === 'asc' ? '↑' : '↓' }}</span>
                         @endif
@@ -80,7 +80,7 @@
                 </th>
                 <th class="finder-list-th finder-list-th--size">
                     <button wire:click="setSortBy('size')" class="finder-sort-btn">
-                        Size
+                        {{ __('finder::finder.col_size') }}
                         @if($sortBy === 'size')
                             <span class="finder-sort-arrow">{{ $sortDir === 'asc' ? '↑' : '↓' }}</span>
                         @endif
@@ -88,7 +88,7 @@
                 </th>
                 <th class="finder-list-th finder-list-th--type">
                     <button wire:click="setSortBy('type')" class="finder-sort-btn">
-                        Type
+                        {{ __('finder::finder.col_type') }}
                         @if($sortBy === 'type')
                             <span class="finder-sort-arrow">{{ $sortDir === 'asc' ? '↑' : '↓' }}</span>
                         @endif
@@ -96,7 +96,7 @@
                 </th>
                 <th class="finder-list-th finder-list-th--modified">
                     <button wire:click="setSortBy('modified')" class="finder-sort-btn">
-                        Modified
+                        {{ __('finder::finder.col_modified') }}
                         @if($sortBy === 'modified')
                             <span class="finder-sort-arrow">{{ $sortDir === 'asc' ? '↑' : '↓' }}</span>
                         @endif
@@ -150,7 +150,7 @@
                     {{ $item->sizeForHumans() }}
                 </td>
                 <td class="finder-list-td finder-list-td--type">
-                    {{ $item->isDir ? 'Folder' : strtoupper($item->extension() ?: $item->mime) }}
+                    {{ $item->isDir ? __('finder::finder.folder') : strtoupper($item->extension() ?: $item->mime) }}
                 </td>
                 <td class="finder-list-td finder-list-td--modified">
                     <span title="{{ date('Y-m-d H:i:s', $item->modified) }}">{{ $item->modifiedForHumans() }}</span>
@@ -160,7 +160,7 @@
             <tr>
                 <td colspan="5" class="finder-list-empty">
                     <div class="finder-empty-state">
-                        <p>This folder is empty</p>
+                        <p>{{ __('finder::finder.empty_folder') }}</p>
                     </div>
                 </td>
             </tr>
@@ -181,17 +181,17 @@
         class="finder-context-menu"
         x-transition
     >
-        <button class="finder-context-item" x-on:click="show = false; $wire.openItem(hash)">Open</button>
-        <button class="finder-context-item" x-on:click="show = false; $dispatch('finder:open-modal', { modal: 'rename' })">Rename</button>
-        <button class="finder-context-item" x-on:click="show = false; $dispatch('finder:copy-selected')">Copy</button>
-        <button class="finder-context-item" x-on:click="show = false; $dispatch('finder:cut-selected')">Cut</button>
+        <button class="finder-context-item" x-on:click="show = false; $wire.openItem(hash)">{{ __('finder::finder.ctx_open') }}</button>
+        <button class="finder-context-item" x-on:click="show = false; $dispatch('finder:open-modal', { modal: 'rename' })">{{ __('finder::finder.ctx_rename') }}</button>
+        <button class="finder-context-item" x-on:click="show = false; $dispatch('finder:copy-selected')">{{ __('finder::finder.ctx_copy') }}</button>
+        <button class="finder-context-item" x-on:click="show = false; $dispatch('finder:cut-selected')">{{ __('finder::finder.ctx_cut') }}</button>
         <div class="finder-context-sep"></div>
-        <button class="finder-context-item" x-on:click="show = false; $dispatch('finder:open-modal', { modal: 'archive' })">Archive</button>
-        <button class="finder-context-item" x-on:click="show = false; $dispatch('finder:open-modal', { modal: 'edit-text' })">Edit</button>
+        <button class="finder-context-item" x-on:click="show = false; $dispatch('finder:open-modal', { modal: 'archive' })">{{ __('finder::finder.ctx_archive') }}</button>
+        <button class="finder-context-item" x-on:click="show = false; $dispatch('finder:open-modal', { modal: 'edit-text' })">{{ __('finder::finder.ctx_edit') }}</button>
         <div class="finder-context-sep"></div>
-        <button class="finder-context-item" x-on:click="show = false; $dispatch('finder:open-modal', { modal: 'properties' })">Properties</button>
+        <button class="finder-context-item" x-on:click="show = false; $dispatch('finder:open-modal', { modal: 'properties' })">{{ __('finder::finder.ctx_properties') }}</button>
         <div class="finder-context-sep"></div>
-        <button class="finder-context-item finder-context-item--danger" x-on:click="show = false; $dispatch('finder:confirm-delete')">Delete</button>
+        <button class="finder-context-item finder-context-item--danger" x-on:click="show = false; $dispatch('finder:confirm-delete')">{{ __('finder::finder.ctx_delete') }}</button>
     </div>
 
 </div>
