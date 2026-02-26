@@ -806,17 +806,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border: 1px solid var(--finder-border);
     border-radius: var(--finder-radius-sm);
-    background: transparent;
+    background: var(--finder-surface-hover);
     color: var(--finder-text-muted);
     cursor: pointer;
     transition: background var(--finder-transition), color var(--finder-transition), border-color var(--finder-transition);
     padding: 0;
     flex-shrink: 0;
-    margin-left: auto;
 }
 
 .finder-theme-toggle:hover {
@@ -830,24 +829,16 @@
     display: block;
 }
 
-/* Show moon icon in dark mode, sun icon in light mode */
-.finder-root[data-theme="dark"] .finder-icon-sun,
-.finder-root:not([data-theme="light"]) .finder-icon-sun {
+/* Default: show moon, hide sun */
+.finder-theme-toggle .finder-icon-sun {
     display: none;
 }
-.finder-root[data-theme="light"] .finder-icon-moon {
-    display: none;
-}
-.finder-root[data-theme="light"] .finder-icon-sun {
+/* Light mode: show sun, hide moon */
+.finder-root[data-theme="light"] .finder-theme-toggle .finder-icon-sun {
     display: block;
 }
-@media (prefers-color-scheme: dark) {
-    .finder-root:not([data-theme]) .finder-icon-sun { display: none; }
-    .finder-root:not([data-theme]) .finder-icon-moon { display: block; }
-}
-@media (prefers-color-scheme: light) {
-    .finder-root:not([data-theme]) .finder-icon-moon { display: none; }
-    .finder-root:not([data-theme]) .finder-icon-sun { display: block; }
+.finder-root[data-theme="light"] .finder-theme-toggle .finder-icon-moon {
+    display: none;
 }
 
 /* =============================================================================
